@@ -3,13 +3,18 @@
     <b-row class="mt-4">
       <b-col cols="4">
         <b-list-group>
+          <b-list-group-item>
+            <b-link @click="newArticle">
+              <b-icon-plus-circle></b-icon-plus-circle>
+              Новая публикация
+            </b-link>
+          </b-list-group-item>
           <b-list-group-item
             v-for="article in articles"
             :key="article.id"
             @click="changeArticle(article)"
             class="article-list-item"
-            :active="isSelected(article)"
-          >
+            :active="isSelected(article)">
             <div>
               <b-badge
                 v-if="article.status == 'NEW'"
@@ -37,19 +42,12 @@
             <!-- {{ article.status }} -->
           </b-list-group-item>
         </b-list-group>
-        <b-button class="mt-4" @click="newArticle">Новая статья</b-button>
       </b-col>
       <b-col>
         <writer-article
           v-if="selected_article"
           :article="selected_article"
-          v-on:update-list="getArticles"
-        ></writer-article>
-      </b-col>
-    </b-row>
-    <b-row>
-      <b-col>
-        <div><b-link :to="{ name: 'LoginPage' }">Выйти</b-link></div>
+          v-on:update-list="getArticles"></writer-article>
       </b-col>
     </b-row>
   </b-container>

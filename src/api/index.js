@@ -88,6 +88,11 @@ const api = {
         status: "REJECTED",
       })
     },
+    deleteArticle(article_id) {
+      return patch("/media/articles/" + article_id + "/", {
+        status: "DELETED",
+      })
+    },
   },
 }
 

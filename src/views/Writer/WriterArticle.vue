@@ -7,15 +7,24 @@
     <div class="mt-4" align="right">
       <b-button
         v-if="article.status == 'NEW' || article.status == 'REJECTED'"
+        @click="deleteArticle"
+        variant="link">
+        Удалить
+      </b-button>
+      <b-button
+        class="ml-2"
+        v-if="article.status == 'NEW' || article.status == 'REJECTED'"
         @click="saveArticle"
-        >Сохранить</b-button
-      >
+        variant="success">
+        Сохранить
+      </b-button>
       <b-button
         class="ml-2"
         v-if="article.status == 'NEW' || article.status == 'REJECTED'"
         @click="saveAndSendToModerationArticle"
-        >Сохранить и отправить на модерацию</b-button
-      >
+        variant="primary">
+        Сохранить и отправить на модерацию
+      </b-button>
     </div>
   </div>
 </template>
@@ -30,14 +39,30 @@ export default {
   },
   methods: {
     saveArticle() {
-      console.log(this.article)
       return api.media.saveArticle(this.article)
     },
     saveAndSendToModerationArticle() {
-      console.log(this.article)
-      return this.saveArticle(this.article)
-        .then((data) => api.media.sendToModeration(this.article.id))
-        .then(() => this.$emit("update-list"))
+      if (
+        confirm(
+          "Отправить публикацию на модерацию? В ходе модерации редактирование публикации невозможно.",
+        )
+      ) {
+        return this.saveArticle(this.article)
+          .then((data) => api.media.sendToModeration(this.article.id))
+          .then(() => {
+            this.$emit("update-list")
+            this.article.status = "MODERATION"
+          })
+      }
+    },
+    deleteArticle() {
+      if (confirm("Вы действительно хотите удалить эту публикацию?")) {
+        return this.saveArticle(this.article)
+          .then((data) => api.media.deleteArticle(this.article.id))
+          .then(() => {
+            this.$emit("article-deleted")
+          })
+      }
     },
   },
 }

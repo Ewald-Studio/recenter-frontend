@@ -8,8 +8,7 @@
             :key="article.id"
             @click="changeArticle(article)"
             class="article-list-item"
-            :active="isSelected(article)"
-          >
+            :active="isSelected(article)">
             <div>
               <b-badge :variant="isSelected(article) ? 'light' : 'warning'"
                 >На модерации</b-badge
@@ -25,8 +24,7 @@
         <moderator-article
           v-if="selected_article"
           :article="selected_article"
-          v-on:update-list="getArticles"
-        ></moderator-article>
+          v-on:update-list="getArticles"></moderator-article>
       </b-col>
     </b-row>
     <b-row>
