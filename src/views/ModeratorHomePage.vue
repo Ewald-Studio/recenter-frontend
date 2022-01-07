@@ -3,7 +3,7 @@
     <div>
       {{ articles }}
     </div>
-    <b-button @click="test">get articlies</b-button>
+    <b-button @click="getArticles">get articlies</b-button>
   </div>
 </template>
 
@@ -17,7 +17,7 @@ export default {
     }
   },
   methods: {
-    test() {
+    getArticles() {
       return api.media.articles().then((data) => (this.articles = data))
     },
   },

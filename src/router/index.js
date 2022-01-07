@@ -1,7 +1,8 @@
 import Vue from "vue"
 import VueRouter from "vue-router"
 import LoginPage from "../views/LoginPage.vue"
-import HomePage from "../views/HomePage.vue"
+import WriterHomePage from "../views/WriterHomePage.vue"
+import ModeratorHomePage from "../views/ModeratorHomePage.vue"
 
 Vue.use(VueRouter)
 
@@ -12,9 +13,14 @@ const routes = [
     component: LoginPage,
   },
   {
-    path: "/home",
-    name: "HomePage",
-    component: HomePage,
+    path: "/writer/home",
+    name: "WriterHomePage",
+    component: WriterHomePage,
+  },
+  {
+    path: "/moderator/home",
+    name: "ModeratorHomePage",
+    component: ModeratorHomePage,
   },
 ]
 
