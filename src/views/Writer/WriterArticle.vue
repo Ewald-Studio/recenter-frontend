@@ -2,7 +2,8 @@
   <div>
     <div>
       <b-input v-model="article.title" placeholder="Заголовок"> </b-input>
-      <b-textarea v-model="article.text" placeholder="Текст"> </b-textarea>
+      <b-textarea class="mt-2" v-model="article.text" placeholder="Текст">
+      </b-textarea>
     </div>
     <div class="mt-4" align="right">
       <b-button
