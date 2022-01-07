@@ -14,7 +14,7 @@ export function reauthenticate() {
   axios.defaults.withCredentials = true
   axios.defaults.headers.common["Authorization"] = `Bearer ${accessToken}`
   // store.commit("invalidateDataCache")
-  return api.clients.profile().then((profile) => {
+  return api.orgstructure.userprofile().then((profile) => {
     store.commit("setProfile", profile)
   })
 }
