@@ -26,6 +26,8 @@
         variant="primary">
         Сохранить и отправить на модерацию
       </b-button>
+      <i v-if="article.status == 'MODERATION'">Публикация на модерации</i>
+      <i v-if="article.status == 'DELETED'">Публикация удалена</i>
     </div>
   </div>
 </template>
@@ -62,6 +64,7 @@ export default {
           .then((data) => api.media.deleteArticle(this.article.id))
           .then(() => {
             this.$emit("article-deleted")
+            this.article.status = "DELETED"
           })
       }
     },

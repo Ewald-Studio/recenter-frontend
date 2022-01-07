@@ -47,7 +47,8 @@
         <writer-article
           v-if="selected_article"
           :article="selected_article"
-          v-on:update-list="getArticles"></writer-article>
+          @update-list="getArticles"
+          @article-deleted="getArticles"></writer-article>
       </b-col>
     </b-row>
   </b-container>
