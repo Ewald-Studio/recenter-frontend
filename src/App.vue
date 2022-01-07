@@ -8,7 +8,7 @@
 <script>
 import { isAuthenticated, reauthenticate } from "@/api/auth"
 import MenuBar from "./components/MenuBar.vue"
-import { mapState } from "vuex"
+import { mapState, mapActions } from "vuex"
 
 export default {
   components: { MenuBar },
@@ -19,11 +19,16 @@ export default {
   mounted() {
     if (isAuthenticated()) {
       reauthenticate()
+        .then(() => this.fetchSections())
+        .then(() => this.fetchQuestions())
     } else {
       if (this.$router.currentRoute.name != "LoginPage") {
         this.$router.replace({ name: "LoginPage" })
       }
     }
+  },
+  methods: {
+    ...mapActions(["fetchSections", "fetchQuestions"]),
   },
 }
 </script>

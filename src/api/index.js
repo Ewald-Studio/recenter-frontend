@@ -93,6 +93,12 @@ const api = {
         status: "DELETED",
       })
     },
+    sections() {
+      return get("/media/sections/")
+    },
+    questions() {
+      return get("/media/questions/")
+    },
   },
 }
 
