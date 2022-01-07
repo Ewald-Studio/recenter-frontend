@@ -2,18 +2,24 @@
   <div>
     <!-- Форма -->
     <div>
-      <b-input size="lg" v-model="article.title" placeholder="Заголовок">
+      <b-input
+        :disabled="!articleIsEditable"
+        size="lg"
+        v-model="article.title"
+        placeholder="Заголовок">
       </b-input>
       <b-textarea
+        :disabled="!articleIsEditable"
         class="mt-2"
         v-model="article.annotation"
         placeholder="Краткая аннотация"></b-textarea>
       <vue-editor
         class="mt-2"
-        :editorToolbar="customToolbar"
-        v-model="article.text"
-        placeholder="Текст"></vue-editor>
+        :disabled="!articleIsEditable"
+        :editorToolbar="articleIsEditable ? customToolbar : [[]]"
+        v-model="article.text"></vue-editor>
       <multiselect
+        :disabled="!articleIsEditable"
         multiple
         class="mt-2"
         v-model="article.sections"
@@ -22,11 +28,13 @@
         placeholder="Разделы">
       </multiselect>
       <b-input
+        :disabled="!articleIsEditable"
         class="mt-2"
         v-model="article.video"
         placeholder="Ссылка на видео на YouTube">
       </b-input>
       <b-input
+        :disabled="!articleIsEditable"
         class="mt-2"
         v-model="article.authorship"
         placeholder="ФИО и должность автора публикации">
@@ -84,6 +92,9 @@ export default {
   },
   computed: {
     ...mapState(["sections", "questions"]),
+    articleIsEditable() {
+      return this.article.status == "NEW" || this.article.status == "REJECTED"
+    },
   },
   methods: {
     saveArticle() {
