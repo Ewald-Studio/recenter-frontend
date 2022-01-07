@@ -7,6 +7,10 @@ function query(method, url, data, tryToRefresh = true) {
     query_promise = axios.get(url)
   } else if (method == "post") {
     query_promise = axios.post(url, data)
+  } else if (method == "put") {
+    query_promise = axios.put(url, data)
+  } else if (method == "patch") {
+    query_promise = axios.patch(url, data)
   }
   return query_promise
     .then((response) => {
@@ -37,6 +41,14 @@ function post(url, data) {
   return query("post", url, data)
 }
 
+function patch(url, data) {
+  return query("patch", url, data)
+}
+
+function put(url, data) {
+  return query("put", url, data)
+}
+
 // API shortcuts
 
 const api = {
@@ -54,6 +66,27 @@ const api = {
   media: {
     articles() {
       return get("/media/articles/")
+    },
+    newArticle() {
+      return post("/media/articles/")
+    },
+    saveArticle(article) {
+      return put("/media/articles/" + article.id + "/", article)
+    },
+    sendToModeration(article_id) {
+      return patch("/media/articles/" + article_id + "/", {
+        status: "MODERATION",
+      })
+    },
+    approveArticle(article_id) {
+      return patch("/media/articles/" + article_id + "/", {
+        status: "APPROVED",
+      })
+    },
+    rejectArticle(article_id) {
+      return patch("/media/articles/" + article_id + "/", {
+        status: "REJECTED",
+      })
     },
   },
 }
