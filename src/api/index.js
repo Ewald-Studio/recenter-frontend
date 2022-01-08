@@ -81,6 +81,7 @@ const api = {
     approveArticle(article_id) {
       return patch("/media/articles/" + article_id + "/", {
         status: "APPROVED",
+        publish_date: new Date(),
       })
     },
     rejectArticle(article_id) {
@@ -91,6 +92,12 @@ const api = {
     deleteArticle(article_id) {
       return patch("/media/articles/" + article_id + "/", {
         status: "DELETED",
+      })
+    },
+    newComment(comment) {
+      return post("/media/comments/", {
+        text: comment.text,
+        article: comment.article,
       })
     },
   },

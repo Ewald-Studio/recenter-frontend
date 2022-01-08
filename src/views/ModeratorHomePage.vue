@@ -10,9 +10,9 @@
             class="article-list-item"
             :active="isSelected(article)">
             <div>
-              <b-badge :variant="isSelected(article) ? 'light' : 'warning'"
-                >На модерации</b-badge
-              >
+              <b-badge :variant="isSelected(article) ? 'light' : 'primary'">{{
+                article.author.organization.name
+              }}</b-badge>
             </div>
             <span v-if="article.title">{{ article.title }}</span>
             <i v-else>Без названия</i>
@@ -25,11 +25,6 @@
           v-if="selected_article"
           :article="selected_article"
           v-on:update-list="getArticles"></moderator-article>
-      </b-col>
-    </b-row>
-    <b-row>
-      <b-col>
-        <div><b-link :to="{ name: 'LoginPage' }">Выйти</b-link></div>
       </b-col>
     </b-row>
   </b-container>
@@ -54,6 +49,7 @@ export default {
   },
   methods: {
     getArticles() {
+      this.selected_article = null
       return api.media.articles().then((data) => (this.articles = data))
     },
     changeArticle(article) {
