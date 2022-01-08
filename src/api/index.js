@@ -67,6 +67,9 @@ const api = {
     articles() {
       return get("/media/articles/")
     },
+    getArticle(article_id) {
+      return get("/media/articles/" + article_id + "/")
+    },
     newArticle() {
       return post("/media/articles/")
     },
