@@ -39,11 +39,7 @@ export default {
           return authenticate(data)
         })
         .then(() => {
-          if (this.$store.state.profile.role == "WRITER") {
-            this.$router.push({ name: "WriterHomePage" })
-          } else if (this.$store.state.profile.role == "MODERATOR") {
-            this.$router.push({ name: "ModeratorHomePage" })
-          }
+          this.$router.push({ name: "HomePage" })
         })
         .catch(() => alert("Неудачная попытка входа"))
     },

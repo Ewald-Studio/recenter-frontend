@@ -8,7 +8,7 @@
         <b-nav-item href="#" disabled>Disabled</b-nav-item>
       </b-navbar-nav> -->
       <b-navbar-nav class="ml-auto">
-        <b-nav-item>{{ profile.fio }}</b-nav-item>
+        <b-nav-item>{{ userProfile.fio }}</b-nav-item>
         <b-nav-item @click="exit">Выйти</b-nav-item>
       </b-navbar-nav>
     </b-collapse>
@@ -20,7 +20,7 @@ import { logout } from "@/api/auth"
 import { mapState } from "vuex"
 export default {
   computed: {
-    ...mapState(["profile"]),
+    ...mapState(["userProfile"]),
   },
   methods: {
     exit() {

@@ -9,8 +9,10 @@
       >
     </div>
     <div class="mt-2" v-if="new_comment.text != null">
-      <textarea v-model="new_comment.text" placeholder="Напишите комментарий">
-      </textarea>
+      <b-form-textarea
+        v-model="new_comment.text"
+        placeholder="Напишите комментарий">
+      </b-form-textarea>
       <br />
       <b-button
         @click="createComment"
@@ -42,8 +44,7 @@ export default {
       if (this.new_comment.text != false) {
         return api.media.newComment(this.new_comment).then((data) => {
           this.new_comment.text = null
-          this.$emit("update-comment")
-          console.log("comment")
+          this.$emit("create")
         })
       }
     },

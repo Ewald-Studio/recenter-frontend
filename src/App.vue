@@ -1,24 +1,29 @@
 <template>
   <div>
-    <menu-bar v-if="profile"></menu-bar>
+    <menu-bar v-if="userProfile"></menu-bar>
     <router-view />
   </div>
 </template>
 
 <script>
 import { isAuthenticated, reauthenticate } from "@/api/auth"
-import MenuBar from "./components/MenuBar.vue"
 import { mapState, mapActions } from "vuex"
+import MenuBar from "./components/MenuBar.vue"
 
 export default {
   components: { MenuBar },
   name: "App",
   computed: {
-    ...mapState(["profile"]),
+    ...mapState(["userProfile"]),
   },
   mounted() {
     if (isAuthenticated()) {
       reauthenticate()
+        .then(() => {
+          if (this.$router.currentRoute.name != "HomePage") {
+            this.$router.replace({ name: "HomePage" })
+          }
+        })
         .then(() => this.fetchSections())
         .then(() => this.fetchQuestions())
     } else {

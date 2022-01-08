@@ -40,7 +40,7 @@
         v-model="article.authorship"
         placeholder="ФИО и должность автора публикации">
       </b-input>
-      <b-card class="mt-2">
+      <b-card class="mt-2" v-if="articleIsEditable || article.files.length">
         <file-upload
           ref="fileupload"
           :hidden="true"
@@ -48,10 +48,15 @@
           v-if="articleIsEditable"
           upload-field-name="files"
           :url="`/media/articles/${article.id}/upload/`"
-          accept="application/pdf">
+          accept="application/pdf"
+          @success="propagateUpdate">
         </file-upload>
-        <div>
-          <b-btn @click="hitFileUpload" variant="info" size="sm"
+        <div v-if="articleIsEditable">
+          <b-btn
+            @click="hitFileUpload"
+            variant="info"
+            size="sm"
+            :disabled="!articleIsEditable"
             >Загрузить файлы к публикации</b-btn
           >
         </div>
@@ -62,6 +67,10 @@
         </files-list>
       </b-card>
     </div>
+    <!-- Комментарии -->
+    <b-card class="mt-2">
+      <comments :article="article" @create="propagateUpdate"></comments>
+    </b-card>
     <!-- Кнопочки -->
     <div class="mt-4 mb-4" align="right">
       <b-button
@@ -80,11 +89,28 @@
       <b-button
         class="ml-2"
         v-if="article.status == 'NEW' || article.status == 'REJECTED'"
-        @click="saveAndSendToModerationArticle"
+        @click="saveArticleAndSendToModeration"
         variant="primary">
         Сохранить и отправить на модерацию
       </b-button>
-      <i v-if="article.status == 'MODERATION'">Публикация на модерации</i>
+
+      <template v-if="article.status == 'MODERATION'">
+        <i v-if="userProfile && userProfile.role == 'WRITER'">
+          Публикация на модерации
+        </i>
+        <div v-else>
+          <b-button @click="rejectArticle" variant="outline-danger">
+            Вернуть на доработку
+          </b-button>
+          <b-button
+            class="ml-2"
+            @click="approveArticle"
+            variant="outline-success">
+            Опубликовать
+          </b-button>
+        </div>
+      </template>
+
       <i v-if="article.status == 'DELETED'">Публикация удалена</i>
     </div>
   </div>
@@ -95,6 +121,7 @@ import { VueEditor } from "vue2-editor"
 import Multiselect from "vue-multiselect"
 import FileUpload from "@/components/FileUpload"
 import FilesList from "@/components/FilesList"
+import Comments from "@/components/Comments"
 import { mapState } from "vuex"
 import api from "@/api"
 
@@ -104,6 +131,7 @@ export default {
     Multiselect,
     FileUpload,
     FilesList,
+    Comments,
   },
   props: ["article"],
   data() {
@@ -117,41 +145,63 @@ export default {
     }
   },
   computed: {
-    ...mapState(["sections", "questions"]),
+    ...mapState(["sections", "questions", "userProfile"]),
     articleIsEditable() {
-      return this.article.status == "NEW" || this.article.status == "REJECTED"
+      return (
+        this.userProfile &&
+        this.userProfile.role == "WRITER" &&
+        (this.article.status == "NEW" || this.article.status == "REJECTED")
+      )
     },
   },
   methods: {
     saveArticle() {
-      return api.media.saveArticle(this.article)
+      return api.media
+        .saveArticle(this.article)
+        .then(() => this.propagateUpdate())
     },
-    saveAndSendToModerationArticle() {
-      if (
-        confirm(
-          "Отправить публикацию на модерацию? В ходе модерации редактирование публикации невозможно.",
-        )
-      ) {
+    saveArticleAndSendToModeration() {
+      const message =
+        "Отправить публикацию на модерацию? В ходе модерации редактирование публикации невозможно."
+      if (confirm(message)) {
+        this.article.status = "MODERATION"
         return this.saveArticle(this.article)
-          .then((data) => api.media.sendToModeration(this.article.id))
-          .then(() => {
-            this.$emit("update-list")
-            this.article.status = "MODERATION"
-          })
+        // .then((data) => api.media.sendToModeration(this.article.id))
+        // .then(() => {
+        //   this.$emit("update")
+        //   this.article.status = "MODERATION"
+        // })
       }
     },
     deleteArticle() {
       if (confirm("Вы действительно хотите удалить эту публикацию?")) {
+        this.article.status = "DELETED"
         return this.saveArticle(this.article)
-          .then((data) => api.media.deleteArticle(this.article.id))
-          .then(() => {
-            this.$emit("article-deleted")
-            this.article.status = "DELETED"
-          })
+        // return this.saveArticle(this.article)
+        //   .then((data) => api.media.deleteArticle(this.article.id))
+        //   .then(() => {
+        //     this.$emit("deleted")
+        //     this.article.status = "DELETED"
+        //   })
+      }
+    },
+    approveArticle() {
+      if (confirm("Подтвердите публикацию статьи")) {
+        this.article.status = "APPROVED"
+        return this.saveArticle(this.article)
+      }
+    },
+    rejectArticle() {
+      if (confirm("Вернуть публикацию на доработку?")) {
+        this.article.status = "REJECTED"
+        return this.saveArticle(this.article)
       }
     },
     hitFileUpload() {
       this.$refs["fileupload"].hit()
+    },
+    propagateUpdate() {
+      this.$emit("update", this.article)
     },
   },
 }

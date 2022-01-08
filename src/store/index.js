@@ -31,7 +31,7 @@ const cachedFetch = (
 
 export default new Vuex.Store({
   state: {
-    profile: null,
+    userProfile: null,
     sections: null,
     sectionsLastUpdate: null,
     questions: null,
@@ -39,10 +39,10 @@ export default new Vuex.Store({
   },
   mutations: {
     setProfile(state, profile) {
-      state.profile = profile
+      state.userProfile = profile
     },
     unsetProfile(state) {
-      state.profile = null
+      state.userProfile = null
     },
     setSections(state, sections) {
       state.sections = sections
