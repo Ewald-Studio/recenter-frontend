@@ -49,17 +49,17 @@ export default {
         this.article.comments.push(this.new_comment)
         return api.media
           .rejectArticle(this.article.id, this.new_comment)
-          .then((data) => {
+          .then(() => {
             return api.media.newComment(this.new_comment)
           })
-          .then((data) => this.$emit("update-list"))
+          .then(() => this.$emit("update-list"))
       }
     },
     approveArticle() {
       if (confirm("Подтвердите публикацию статьи")) {
         return api.media
           .approveArticle(this.article.id)
-          .then((data) => this.$emit("update-list"))
+          .then(() => this.$emit("update-list"))
       }
     },
     newComment() {
