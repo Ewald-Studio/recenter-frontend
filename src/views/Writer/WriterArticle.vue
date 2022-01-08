@@ -17,7 +17,8 @@
         class="mt-2"
         :disabled="!articleIsEditable"
         :editorToolbar="articleIsEditable ? customToolbar : [[]]"
-        v-model="article.text"></vue-editor>
+        v-model="article.text">
+      </vue-editor>
       <multiselect
         :disabled="!articleIsEditable"
         multiple
@@ -39,6 +40,27 @@
         v-model="article.authorship"
         placeholder="ФИО и должность автора публикации">
       </b-input>
+      <b-card class="mt-2">
+        <file-upload
+          ref="fileupload"
+          :hidden="true"
+          :multiple="true"
+          v-if="articleIsEditable"
+          upload-field-name="files"
+          :url="`/media/articles/${article.id}/upload/`"
+          accept="application/pdf">
+        </file-upload>
+        <div>
+          <b-btn @click="hitFileUpload" variant="info" size="sm"
+            >Загрузить файлы к публикации</b-btn
+          >
+        </div>
+        <files-list
+          v-if="article.files && article.files.length"
+          class="mt-1"
+          :files="article.files">
+        </files-list>
+      </b-card>
     </div>
     <!-- Кнопочки -->
     <div class="mt-4 mb-4" align="right">
@@ -71,6 +93,8 @@
 <script>
 import { VueEditor } from "vue2-editor"
 import Multiselect from "vue-multiselect"
+import FileUpload from "@/components/FileUpload"
+import FilesList from "@/components/FilesList"
 import { mapState } from "vuex"
 import api from "@/api"
 
@@ -78,6 +102,8 @@ export default {
   components: {
     VueEditor,
     Multiselect,
+    FileUpload,
+    FilesList,
   },
   props: ["article"],
   data() {
@@ -123,6 +149,9 @@ export default {
             this.article.status = "DELETED"
           })
       }
+    },
+    hitFileUpload() {
+      this.$refs["fileupload"].hit()
     },
   },
 }
