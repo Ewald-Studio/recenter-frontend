@@ -42,7 +42,7 @@ export default {
       if (confirm("Подтвердите публикацию статьи")) {
         return api.media
           .approveArticle(this.article.id)
-          .then((data) => this.$emit("update-list"))
+          .then(() => this.$emit("update-list"))
       }
     },
     refetchArticle() {
