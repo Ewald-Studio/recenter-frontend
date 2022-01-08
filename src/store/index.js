@@ -1,5 +1,8 @@
 import Vue from "vue"
 import Vuex from "vuex"
+import api from "@/api"
+
+Vue.use(Vuex)
 
 /* eslint-disable */
 
@@ -10,11 +13,29 @@ const HOURS = HOUR
 
 /* eslint-enable */
 
-Vue.use(Vuex)
+const cachedFetch = (
+  commitFunc,
+  lastValue,
+  lastUpdate,
+  cachePeriod,
+  apiHandler,
+  mutationName,
+  force = false,
+) => {
+  if (force || lastUpdate === null || new Date() - lastUpdate > cachePeriod) {
+    return apiHandler().then((data) => commitFunc(mutationName, data))
+  } else {
+    return Promise.resolve(lastValue)
+  }
+}
 
 export default new Vuex.Store({
   state: {
     profile: null,
+    sections: null,
+    sectionsLastUpdate: null,
+    questions: null,
+    questionsLastUpdate: null,
   },
   mutations: {
     setProfile(state, profile) {
@@ -23,28 +44,39 @@ export default new Vuex.Store({
     unsetProfile(state) {
       state.profile = null
     },
+    setSections(state, sections) {
+      state.sections = sections
+    },
+    setQuestions(state, questions) {
+      state.questions = questions
+    },
   },
-  actions: {},
+  actions: {
+    fetchSections({ commit, state }) {
+      return cachedFetch(
+        commit,
+        state.sections,
+        state.sectionsLastUpdate,
+        10 * MINUTES,
+        api.media.sections,
+        "setSections",
+      )
+    },
+    fetchQuestions({ commit, state }) {
+      return cachedFetch(
+        commit,
+        state.questions,
+        state.questionsLastUpdate,
+        10 * MINUTES,
+        api.media.questions,
+        "setQuestions",
+      )
+    },
+  },
   modules: {},
 })
 
 // import api from "@/api"
-
-// const cachedFetch = (
-//   commitFunc,
-//   lastValue,
-//   lastUpdate,
-//   cachePeriod,
-//   apiHandler,
-//   mutationName,
-//   force = false
-// ) => {
-//   if (force || lastUpdate === null || new Date() - lastUpdate > cachePeriod) {
-//     return apiHandler().then((data) => commitFunc(mutationName, data))
-//   } else {
-//     return Promise.resolve(lastValue)
-//   }
-// }
 
 // export default createStore({
 //   state: {
