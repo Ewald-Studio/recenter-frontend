@@ -6,19 +6,8 @@
       </b-textarea>
     </div>
 
-    <div class="mt-4">
-      <p v-for="comment in article.comments" :key="comment.id">
-        {{ comment.text }}
-      </p>
-      <b-button v-if="new_comment.text == null" class="mt-4" @click="newComment"
-        >Новый комментарий</b-button
-      >
-    </div>
-    <div class="mt-2">
-      <textarea
-        v-if="new_comment.text != null"
-        v-model="new_comment.text"></textarea>
-    </div>
+    <comments :article="article" @update-comment="refetchArticle"></comments>
+
     <div class="mt-4" align="right">
       <b-button @click="rejectArticle" variant="outline-danger">
         Вернуть на доработку
@@ -32,26 +21,20 @@
 
 <script>
 import api from "@/api"
+import Comments from "../../components/Comments.vue"
 
 export default {
+  components: { Comments },
   props: ["article"],
   data() {
-    return {
-      new_comment: {
-        article: this.article.id,
-        text: null,
-      },
-    }
+    return {}
   },
   methods: {
     rejectArticle() {
       if (confirm("Вернуть на доработку?")) {
         this.article.comments.push(this.new_comment)
         return api.media
-          .rejectArticle(this.article.id, this.new_comment)
-          .then((data) => {
-            return api.media.newComment(this.new_comment)
-          })
+          .rejectArticle(this.article.id)
           .then((data) => this.$emit("update-list"))
       }
     },
@@ -62,8 +45,9 @@ export default {
           .then((data) => this.$emit("update-list"))
       }
     },
-    newComment() {
-      this.new_comment.text = ""
+    refetchArticle() {
+      this.$emit("update-article", this.article.id)
+      console.log("article")
     },
   },
 }

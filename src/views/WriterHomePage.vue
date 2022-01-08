@@ -48,7 +48,8 @@
           v-if="selected_article"
           :article="selected_article"
           @update-list="getArticles"
-          @article-deleted="getArticles"></writer-article>
+          @article-deleted="getArticles"
+          @update-article="refreshArticle"></writer-article>
       </b-col>
     </b-row>
   </b-container>
@@ -57,6 +58,7 @@
 <script>
 import api from "@/api"
 import WriterArticle from "./Writer/WriterArticle.vue"
+import find from "lodash/find"
 
 export default {
   data() {
@@ -86,6 +88,12 @@ export default {
     },
     isSelected(article) {
       return this.selected_article && this.selected_article.id == article.id
+    },
+    refreshArticle(article_id) {
+      console.log("home")
+      return this.getArticles().then(() => {
+        this.selected_article = find(this.articles, { id: article_id })
+      })
     },
   },
 }
