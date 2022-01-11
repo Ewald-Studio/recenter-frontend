@@ -1,9 +1,27 @@
 <template>
   <div>
     <div class="mt-4">
-      <p v-for="comment in article.comments" :key="comment.id">
-        {{ comment.text }}
-      </p>
+      <b-card
+        v-for="comment in article.comments"
+        :key="comment.id"
+        class="mt-2">
+        <span>
+          <b-badge
+            :variant="
+              comment.author.role == 'MODERATOR' ||
+              comment.author.role == 'ADMIN'
+                ? 'warning'
+                : 'primary'
+            ">
+            {{ roles[comment.author.role] }}
+          </b-badge>
+          <strong>{{ comment.author.fio }}</strong>
+        </span>
+        <p>
+          <i>{{ comment.datetime | dateFormat }}</i>
+        </p>
+        <p>{{ comment.text }}</p>
+      </b-card>
       <b-button v-if="new_comment.text == null" class="mt-4" @click="newComment"
         >Новый комментарий</b-button
       >
@@ -25,6 +43,8 @@
 
 <script>
 import api from "@/api"
+import moment from "moment"
+import format from "moment"
 
 export default {
   props: ["article"],
@@ -34,7 +54,18 @@ export default {
         article: this.article.id,
         text: null,
       },
+      roles: {
+        MODERATOR: "Модератор",
+        ADMIN: "Администратор",
+        WRITER: "Автор",
+      },
     }
+  },
+  computed: {},
+  filters: {
+    dateFormat(date) {
+      return moment(String(date)).format("DD.MM.YYYY HH:mm")
+    },
   },
   methods: {
     newComment() {

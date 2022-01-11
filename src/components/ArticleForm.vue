@@ -68,7 +68,7 @@
       </b-card>
     </div>
     <!-- Комментарии -->
-    <b-card class="mt-2">
+    <b-card class="mt-2" title="Комментарии">
       <comments :article="article" @create="propagateUpdate"></comments>
     </b-card>
     <!-- Кнопочки -->
@@ -122,6 +122,7 @@ import Multiselect from "vue-multiselect"
 import FileUpload from "@/components/FileUpload"
 import FilesList from "@/components/FilesList"
 import Comments from "@/components/Comments"
+import map from "lodash/map"
 import { mapState } from "vuex"
 import api from "@/api"
 
