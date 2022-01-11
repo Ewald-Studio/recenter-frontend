@@ -28,6 +28,12 @@
         :custom-label="(opt) => sections.find((x) => x.id == opt).name"
         placeholder="Разделы">
       </multiselect>
+      <b-textarea
+        :disabled="!articleIsEditable"
+        class="mt-2"
+        placeholder="Вопросы">
+        {{ article.questions }}
+      </b-textarea>
       <b-input
         :disabled="!articleIsEditable"
         class="mt-2"
@@ -63,7 +69,8 @@
         <files-list
           v-if="article.files && article.files.length"
           class="mt-1"
-          :files="article.files">
+          :files="article.files"
+          @update="propagateUpdate">
         </files-list>
       </b-card>
     </div>

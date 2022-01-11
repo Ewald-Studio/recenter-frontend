@@ -22,6 +22,7 @@
             :articles-list="articlesList"
             @selected="selectArticle"
             @created="updateArticle"
+            @update-list="fetchArticlesList"
             v-if="articlesList"></articles-list>
         </b-col>
         <b-col cols="8">
