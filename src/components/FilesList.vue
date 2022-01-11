@@ -5,7 +5,11 @@
       <b-link :href="file[urlFieldName]" target="_blank"
         >{{ file[labelFieldName] ? file[labelFieldName] : "Без названия" }}
       </b-link>
-      <b-button size="sm" variant="outline-danger" @click="removeFile(file.id)">
+      <b-button
+        size="sm"
+        variant="outline-danger"
+        @click="removeFile(file.id)"
+        v-if="userProfile.role == 'WRITER'">
         <b-icon-x></b-icon-x
       ></b-button>
     </div>
@@ -14,6 +18,7 @@
 
 <script>
 import axios from "axios"
+import { mapState } from "vuex"
 
 export default {
   props: {
@@ -21,6 +26,9 @@ export default {
     labelFieldName: { default: "name" },
     urlFieldName: { default: "file" },
     keyFieldName: { default: "id" },
+  },
+  computed: {
+    ...mapState(["userProfile"]),
   },
   methods: {
     removeFile(file_id) {

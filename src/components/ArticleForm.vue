@@ -31,7 +31,8 @@
       <b-textarea
         :disabled="!articleIsEditable"
         class="mt-2"
-        placeholder="Вопросы">
+        placeholder="Вопросы"
+        v-model="article.questions">
         {{ article.questions }}
       </b-textarea>
       <b-input

@@ -74,7 +74,7 @@ const api = {
       return post("/media/articles/")
     },
     saveArticle(article) {
-      return put("/media/articles/" + article.id + "/", article)
+      return patch("/media/articles/" + article.id + "/", article)
     },
     sendToModeration(article_id) {
       return patch("/media/articles/" + article_id + "/", {

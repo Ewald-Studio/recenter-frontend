@@ -12,6 +12,10 @@
           <create-article-button
             v-if="userProfile && userProfile.role == 'WRITER'"
             @created="updateArticle"></create-article-button>
+          <refresh-articles-list-button
+            @update="fetchArticlesList"
+            v-if="userProfile && userProfile.role != 'WRITER'">
+          </refresh-articles-list-button>
         </p>
       </div>
     </template>
@@ -44,12 +48,14 @@ import { mapState } from "vuex"
 import ArticlesList from "../components/ArticlesList"
 import ArticleForm from "../components/ArticleForm"
 import CreateArticleButton from "../components/CreateArticleButton.vue"
+import RefreshArticlesListButton from "../components/RefreshArticlesListButton.vue"
 
 export default {
   components: {
     ArticlesList,
     ArticleForm,
     CreateArticleButton,
+    RefreshArticlesListButton,
   },
   data() {
     return {
