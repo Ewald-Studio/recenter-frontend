@@ -81,7 +81,9 @@
       class="mt-2"
       title="Комментарии"
       v-if="
-        articleIsEditable || (article.comments && article.comments.length > 0)
+        articleIsEditable ||
+        (article.comments && article.comments.length > 0) ||
+        userProfile.role == 'MODERATOR'
       ">
       <comments :article="article" @create="propagateUpdate"></comments>
     </b-card>
