@@ -7,11 +7,11 @@
       </b-link>
       <b-button
         size="sm"
-        variant="outline-danger"
+        variant="link text-danger"
         @click="removeFile(file.id)"
-        v-if="userProfile.role == 'WRITER'">
-        <b-icon-x></b-icon-x
-      ></b-button>
+        v-if="isEditable && userProfile.role == 'WRITER'">
+        <b-icon-x></b-icon-x>
+      </b-button>
     </div>
   </div>
 </template>
@@ -26,6 +26,7 @@ export default {
     labelFieldName: { default: "name" },
     urlFieldName: { default: "file" },
     keyFieldName: { default: "id" },
+    isEditable: { default: false },
   },
   computed: {
     ...mapState(["userProfile"]),
@@ -35,7 +36,7 @@ export default {
       if (confirm("Удалить файл?")) {
         return axios
           .delete("/media/articlefiles/" + file_id + "/")
-          .then((response) => this.$emit("update"))
+          .then(() => this.$emit("update"))
       }
     },
   },

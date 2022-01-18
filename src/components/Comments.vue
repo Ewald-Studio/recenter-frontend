@@ -1,12 +1,13 @@
 <template>
   <div>
     <div class="mt-4">
-      <b-card
+      <div
         v-for="comment in article.comments"
         :key="comment.id"
-        class="mt-2">
+        class="mt-2 mb-4">
         <span>
           <b-badge
+            class="mr-2"
             :variant="
               comment.author.role == 'MODERATOR' ||
               comment.author.role == 'ADMIN'
@@ -15,16 +16,21 @@
             ">
             {{ roles[comment.author.role] }}
           </b-badge>
-          <strong>{{ comment.author.fio }}</strong>
+          <strong class="mr-2">{{ comment.author.fio }}</strong>
+          <i>
+            <small>{{ comment.datetime | dateFormat }}</small>
+          </i>
         </span>
-        <p>
-          <i>{{ comment.datetime | dateFormat }}</i>
-        </p>
-        <p>{{ comment.text }}</p>
-      </b-card>
-      <b-button v-if="new_comment.text == null" class="mt-4" @click="newComment"
-        >Новый комментарий</b-button
-      >
+        <p class="mt-2">{{ comment.text }}</p>
+      </div>
+      <b-button
+        v-if="new_comment.text == null"
+        class="mt-4"
+        variant="outline-info"
+        size="sm"
+        @click="newComment">
+        Новый комментарий
+      </b-button>
     </div>
     <div class="mt-2" v-if="new_comment.text != null">
       <b-form-textarea
@@ -33,6 +39,8 @@
       </b-form-textarea>
       <br />
       <b-button
+        variant="info"
+        size="sm"
         @click="createComment"
         :disabled="new_comment.text ? false : true">
         <span>Добавить комментарий</span>
@@ -44,7 +52,7 @@
 <script>
 import api from "@/api"
 import moment from "moment"
-import format from "moment"
+// import format from "moment"
 
 export default {
   props: ["article"],
@@ -52,7 +60,7 @@ export default {
     return {
       new_comment: {
         article: this.article.id,
-        text: null,
+        text: "",
       },
       roles: {
         MODERATOR: "Модератор",
@@ -73,8 +81,8 @@ export default {
     },
     createComment() {
       if (this.new_comment.text != false) {
-        return api.media.newComment(this.new_comment).then((data) => {
-          this.new_comment.text = null
+        return api.media.newComment(this.new_comment).then(() => {
+          this.new_comment.text = ""
           this.$emit("create")
         })
       }

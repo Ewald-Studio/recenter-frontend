@@ -22,6 +22,7 @@
 // import axios from "axios"
 import api from "@/api"
 import { authenticate } from "@/api/auth"
+import { mapActions } from "vuex"
 
 export default {
   data() {
@@ -31,6 +32,7 @@ export default {
     }
   },
   methods: {
+    ...mapActions(["fetchSections", "fetchQuestions"]),
     login() {
       return api.orgstructure
         .login(this.username, this.password)
@@ -38,6 +40,8 @@ export default {
           console.log(data)
           return authenticate(data)
         })
+        .then(() => this.fetchSections())
+        .then(() => this.fetchQuestions())
         .then(() => {
           this.$router.push({ name: "HomePage" })
         })

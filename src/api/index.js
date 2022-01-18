@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { refresh, logout } from "./auth"
 import axios from "axios"
 

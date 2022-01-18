@@ -61,7 +61,7 @@
         <div v-if="articleIsEditable">
           <b-btn
             @click="hitFileUpload"
-            variant="info"
+            variant="outline-info"
             size="sm"
             :disabled="!articleIsEditable"
             >Загрузить файлы к публикации</b-btn
@@ -71,12 +71,18 @@
           v-if="article.files && article.files.length"
           class="mt-1"
           :files="article.files"
+          :isEditable="articleIsEditable"
           @update="propagateUpdate">
         </files-list>
       </b-card>
     </div>
     <!-- Комментарии -->
-    <b-card class="mt-2" title="Комментарии">
+    <b-card
+      class="mt-2"
+      title="Комментарии"
+      v-if="
+        articleIsEditable || (article.comments && article.comments.length > 0)
+      ">
       <comments :article="article" @create="propagateUpdate"></comments>
     </b-card>
     <!-- Кнопочки -->
@@ -84,22 +90,22 @@
       <b-button
         v-if="article.status == 'NEW' || article.status == 'REJECTED'"
         @click="deleteArticle"
-        variant="link">
+        variant="link text-danger">
         Удалить
       </b-button>
-      <b-button
+      <!-- <b-button
         class="ml-2"
         v-if="article.status == 'NEW' || article.status == 'REJECTED'"
         @click="saveArticle"
         variant="success">
         Сохранить
-      </b-button>
+      </b-button> -->
       <b-button
         class="ml-2"
         v-if="article.status == 'NEW' || article.status == 'REJECTED'"
         @click="saveArticleAndSendToModeration"
         variant="primary">
-        Сохранить и отправить на модерацию
+        Отправить на модерацию
       </b-button>
 
       <template v-if="article.status == 'MODERATION'">
@@ -130,9 +136,10 @@ import Multiselect from "vue-multiselect"
 import FileUpload from "@/components/FileUpload"
 import FilesList from "@/components/FilesList"
 import Comments from "@/components/Comments"
-import map from "lodash/map"
+// import map from "lodash/map"
 import { mapState } from "vuex"
 import api from "@/api"
+import Debouncer from "@/api/debouncer"
 
 export default {
   components: {
@@ -164,6 +171,13 @@ export default {
     },
   },
   methods: {
+    updateArticle() {
+      Debouncer.execDelayed(
+        () => api.media.saveArticle(this.article),
+        1000,
+        "save-article",
+      )
+    },
     saveArticle() {
       return api.media
         .saveArticle(this.article)
@@ -211,6 +225,14 @@ export default {
     },
     propagateUpdate() {
       this.$emit("update", this.article)
+    },
+  },
+  watch: {
+    article: {
+      deep: true,
+      handler() {
+        this.updateArticle()
+      },
     },
   },
 }

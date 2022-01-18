@@ -24,8 +24,8 @@
 </template>
 
 <script>
-import api from "@/api"
-import find from "lodash/find"
+// import api from "@/api"
+// import find from "lodash/find"
 import { mapState } from "vuex"
 
 import CreateArticleButton from "@/components/CreateArticleButton"
