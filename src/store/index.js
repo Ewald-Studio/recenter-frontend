@@ -1,6 +1,7 @@
 import Vue from "vue"
 import Vuex from "vuex"
 import api from "@/api"
+import axios from "axios"
 
 Vue.use(Vuex)
 
@@ -36,6 +37,7 @@ export default new Vuex.Store({
     sectionsLastUpdate: null,
     questions: null,
     questionsLastUpdate: null,
+    autoFormSchemas: {},
   },
   mutations: {
     setProfile(state, profile) {
@@ -49,6 +51,9 @@ export default new Vuex.Store({
     },
     setQuestions(state, questions) {
       state.questions = questions
+    },
+    addAutoFormSchema(state, data) {
+      state.autoFormSchemas[data.url] = data.schema
     },
   },
   actions: {
@@ -71,6 +76,16 @@ export default new Vuex.Store({
         api.media.questions,
         "setQuestions",
       )
+    },
+    fetchFormSchema({ commit, state }, url) {
+      if (!state.autoFormSchemas[url]) {
+        return axios.options(url).then((response) => {
+          commit("addAutoFormSchema", {
+            url: url,
+            schema: response.data.actions.POST,
+          })
+        })
+      }
     },
   },
   modules: {},

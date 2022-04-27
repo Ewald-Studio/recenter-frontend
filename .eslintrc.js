@@ -14,5 +14,7 @@ module.exports = {
       process.env.NODE_ENV === "production" ? "error" : "warn",
     "no-unused-vars": process.env.NODE_ENV === "production" ? "error" : "warn",
     "vue/no-deprecated-slot-attribute": "off",
+    "vue/no-use-v-if-with-v-for": "off",
+    "vue/require-prop-type-constructor": "off",
   },
 }
